@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Input Arsip Digital — KPU Kab. Muna</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f4f1eb;
+      --surface:  #faf8f3;
+      --card:     #ffffff;
+      --border:   #ddd8cc;
+      --accent:   #1a3a5c;
+      --gold:     #b8860b;
+      --gold-lt:  #e8d5a3;
+      --danger:   #c0392b;
+      --success:  #1e6b45;
+      --text:     #1c1c1c;
+      --muted:    #7a7060;
+      --radius:   14px;
+      --tr:       0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      padding: 40px 16px 80px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 0% 0%, rgba(26,58,92,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 100% 100%, rgba(184,134,11,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .wrapper { width: 100%; max-width: 680px; position: relative; }
+
+    /* ── Header ── */
+    .header-card {
+      background: var(--accent);
+      border-radius: var(--radius);
+      padding: 36px 44px 30px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      animation: up .55s ease both;
+    }
+
+    .header-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .header-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), #f0c040, var(--gold));
+    }
+
+    .logo-row {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .logo-badge {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+
+    .logo-text { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-lt); font-weight: 400; }
+    .logo-sub  { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+    .header-card h1 {
+      font-family: 'Lora', serif;
+      font-size: clamp(20px, 4.5vw, 27px);
+      color: #fff;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .header-card p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+
+    .req-note { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 14px; }
+    .req-note span { color: #f09090; }
+
+    /* ── Progress ── */
+    .progress-wrap { margin-bottom: 20px; animation: up .5s ease .05s both; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .progress-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); border-radius: 99px; width: 0%; transition: width .5s ease; }
+
+    /* ── Section card ── */
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px 36px;
+      margin-bottom: 16px;
+      animation: up .55s ease both;
+    }
+
+    .section:nth-child(2) { animation-delay:.08s }
+    .section:nth-child(3) { animation-delay:.14s }
+    .section:nth-child(4) { animation-delay:.20s }
+    .section:nth-child(5) { animation-delay:.26s }
+    .section:nth-child(6) { animation-delay:.32s }
+
+    @keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+    .sec-title {
+      font-family: 'Lora', serif;
+      font-size: 14px; color: var(--accent);
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .sec-title .num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 11px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sec-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ── Field ── */
+    .field { margin-bottom: 22px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: block; font-size: 13px; font-weight: 500;
+      color: var(--text); margin-bottom: 8px; letter-spacing: .01em;
+    }
+
+    .field label .req { color: var(--danger); margin-left: 3px; }
+    .field .hint { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+    /* auto-generated badge */
+    .auto-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--success); background: rgba(30,107,69,.08);
+      border: 1px solid rgba(30,107,69,.2); border-radius: 99px;
+      padding: 3px 8px; margin-left: 8px; font-weight: 500;
+    }
+
+    /* ── Inputs ── */
+    input[type=text], input[type=email], input[type=date],
+    input[type=number], input[type=url], select, textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13.5px; font-weight: 300;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color var(--tr), box-shadow var(--tr);
+      -webkit-appearance: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26,58,92,.1);
+      background: #fff;
+    }
+
+    input.readonly-styled {
+      background: #f0ede6;
+      color: var(--muted);
+      cursor: default;
+    }
+
+    input::placeholder, textarea::placeholder { color: #bbb6ac; }
+
+    textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+    /* Select */
+    .sel-wrap { position: relative; }
+    .sel-wrap::after {
+      content: '';
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-top: 6px solid var(--muted);
+      pointer-events: none;
+    }
+    .sel-wrap:focus-within::after { border-top-color: var(--accent); }
+    select { padding-right: 36px; cursor: pointer; }
+    select option { background: #fff; color: var(--text); }
+
+    /* Grid cols */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    @media(max-width:520px){ .grid2 { grid-template-columns: 1fr; } }
+
+    /* Radio cards */
+    .radio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+
+    .radio-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all var(--tr);
+      user-select: none;
+    }
+
+    .radio-card:hover { border-color: rgba(26,58,92,.4); }
+    .radio-card input { display: none; }
+    .radio-card:has(input:checked) { border-color: var(--accent); background: rgba(26,58,92,.04); }
+
+    .radio-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid var(--border); flex-shrink: 0;
+      transition: all var(--tr);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .radio-card:has(input:checked) .radio-dot {
+      background: var(--accent); border-color: var(--accent);
+    }
+
+    .radio-dot::after {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: #fff; opacity: 0;
+      transition: opacity var(--tr);
+    }
+
+    .radio-card:has(input:checked) .radio-dot::after { opacity: 1; }
+
+    .radio-label { font-size: 13px; color: var(--text); }
+    .radio-card:has(input:checked) .radio-label { color: var(--accent); font-weight: 500; }
+
+    /* Status badge inside field */
+    .status-preview {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 99px;
+      font-size: 12px; font-weight: 500; letter-spacing: .5px;
+      background: #e8f5ee; color: var(--success);
+      border: 1px solid rgba(30,107,69,.2);
+      margin-top: 8px; transition: all var(--tr);
+    }
+
+    .status-preview.review  { background:#fff8e6; color:#8a6200; border-color:rgba(138,98,0,.2); }
+    .status-preview.expired { background:#fdecea; color:var(--danger); border-color:rgba(192,57,43,.2); }
+    .status-preview.dicabut { background:#f5f0f9; color:#5e3d8f; border-color:rgba(94,61,143,.2); }
+
+    /* Folder preview */
+    .folder-preview {
+      background: linear-gradient(135deg, #f0ede6, #e8e3d8);
+      border: 1px dashed #c8c0b0;
+      border-radius: 9px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'IBM Plex Sans', monospace;
+    }
+
+    .folder-preview .path { color: var(--accent); font-weight: 500; }
+
+    /* Upload area */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 9px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--tr);
+      background: var(--surface);
+      position: relative;
+    }
+
+    .upload-area:hover { border-color: var(--accent); background: rgba(26,58,92,.02); }
+    .upload-area.has-file { border-color: var(--success); border-style: solid; background: rgba(30,107,69,.03); }
+
+    .upload-area input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+
+    .upload-icon { font-size: 28px; margin-bottom: 8px; }
+    .upload-text { font-size: 13px; color: var(--muted); }
+    .upload-text strong { color: var(--accent); }
+    .upload-file-name { font-size: 12px; color: var(--success); margin-top: 6px; font-weight: 500; }
+
+    /* Divider */
+    .div { height:1px; background:var(--border); margin: 20px 0; }
+
+    /* Submit */
+    .submit-wrap {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+      animation: up .55s ease .35s both;
+    }
+
+    .btn-submit {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--accent); color: #fff;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13.5px; font-weight: 500;
+      padding: 12px 28px; border: none; border-radius: 99px;
+      cursor: pointer;
+      transition: background var(--tr), transform var(--tr), box-shadow var(--tr);
+    }
+
+    .btn-submit:hover { background: #122b47; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,58,92,.25); }
+    .btn-submit:active { transform: none; }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-reset {
+      background: none; border: none; color: var(--muted);
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 13px;
+      cursor: pointer; transition: color var(--tr);
+    }
+
+    .btn-reset:hover { color: var(--danger); }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--accent); color: #fff;
+      padding: 12px 24px; border-radius: 99px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      opacity: 0; transition: all .4s ease; pointer-events: none; white-space: nowrap;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger); }
+
+    /* Spinner */
+    .spinner {
+      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff; border-radius: 50%;
+      display: none; animation: spin .6s linear infinite;
+    }
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-text { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Apps Script config box ── */
+    .config-box {
+      background: #fffbf0;
+      border: 1px solid #e8d5a3;
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      animation: up .5s ease both;
+    }
+
+    .config-box h3 { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+    .config-box label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
+    .config-box input { width: 100%; padding: 8px 12px; border: 1px solid #e0d4b5; border-radius: 7px; font-size: 12px; font-family: monospace; background: #fff; color: var(--text); outline: none; }
+    .config-box input:focus { border-color: var(--gold); }
+    .config-box .note { font-size: 11px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+    .config-box .note a { color: var(--gold); }
+
+    ::-webkit-scrollbar { width:5px }
+    ::-webkit-scrollbar-track { background: var(--bg) }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Config box -->
+ 
+
+  <!-- Header -->
+  <div class="header-card">
+    <div class="logo-row">
+      <div class="logo-badge">📋</div>
+      <div>
+        <div class="logo-text">KPU Kabupaten Muna</div>
+        <div class="logo-sub">Sistem Arsip Digital Produk Hukum</div>
+      </div>
+    </div>
+    <h1>Input Indeks Arsip<br/>Dokumen Baru</h1>
+    <p>Isi formulir lengkap. Dokumen akan otomatis tercatat di Google Sheets dan tersimpan di folder Google Drive sesuai jenis & periode.</p>
+    <div class="req-note"><span>*</span> Wajib diisi</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Kelengkapan Isian</span>
+      <span id="progPct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+  </div>
+
+  <!-- ─── SECTION 1: Identitas Dokumen ─── -->
+  <div class="section">
+    <div class="sec-title"><div class="num">1</div> Identitas Dokumen</div>
+
+    <div class="field">
+      <label>Jenis Dokumen <span class="req">*</span></label>
+      <div class="radio-grid" id="jenisGrid">
+        <label class="radio-card"><input type="radio" name="jenis" value="Surat Keputusan"/><div class="radio-dot"></div><span class="radio-label">Surat Keputusan</span></label>
+        <label class="radio-card"><input type="radio" name="jenis" value="Peraturan KPU"/><div class="radio-dot"></div><span class="radio-label">Peraturan KPU</span></label>
+
+        <label class="radio-card"><input type="radio" name="jenis" value="Notulen Rapat"/><div class="radio-dot"></div><span class="radio-label">Notulen Rapat</span></label>
+        <label class="radio-card"><input type="radio" name="jenis" value="Berita Acara"/><div class="radio-dot"></div><span class="radio-label">Berita Acara</span></label>
+       </div>
+      <div class="folder-preview" id="folderPreview" style="display:none">
+        📁 <span class="path" id="folderPath">—</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>No. Dokumen <span class="req">*</span> <span class="auto-badge">✦ Auto</span></label>
+      <input type="text" id="noDoc" class="readonly-styled" readonly placeholder="Otomatis diisi setelah Jenis & Tanggal dipilih"/>
+      <div class="hint">Format: SK/001/KPU-MNA/I/2024 — dihasilkan otomatis.</div>
+    </div>
+
+    <div class="field">
+      <label>Judul / Perihal <span class="req">*</span></label>
+      <input type="text" id="judul" placeholder="Contoh: Penetapan Daftar Pemilih Tetap (DPT) Pemilu 2024"/>
+    </div>
+
+    <div class="field">
+      <label>Tahun <span class="req">*</span> <span class="auto-badge">✦ Auto</span></label>
+      <input type="number" id="tahun" class="readonly-styled" readonly placeholder="Otomatis dari tanggal"/>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 2: Tanggal ─── -->
+  <div class="section">
+    <div class="sec-title"><div class="num">2</div> Tanggal Dokumen</div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Tanggal Ditetapkan <span class="req">*</span></label>
+        <input type="date" id="tglDitetapkan" oninput="onDateChange()"/>
+      </div>
+      <div class="field">
+        <label>Tanggal Berlaku</label>
+        <input type="date" id="tglBerlaku"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Tanggal Berakhir <small style="font-weight:300;color:var(--muted)">(kosongkan jika tidak ada batas waktu)</small></label>
+      <input type="date" id="tglBerakhir" oninput="updateStatus()"/>
+    </div>
+
+    <div class="field">
+      <label>Status Dokumen <span class="auto-badge">✦ Auto</span></label>
+      <div class="status-preview" id="statusBadge">⬤ &nbsp;Aktif</div>
+      <div class="hint">Dihitung otomatis berdasarkan tanggal berakhir.</div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 3: Organisasi ─── -->
+  <div class="section">
+    <div class="sec-title"><div class="num">3</div> Divisi & Nomor Urut</div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Divisi / Bidang <span class="req">*</span></label>
+        <div class="sel-wrap">
+          <select id="divisi">
+            <option value="" disabled selected>— Pilih —</option>
+            <option>Teknis Penyelenggaraan</option>
+            <option>SDM &amp; Partisipasi</option>
+            <option>Keuangan</option>
+            <option>Hukum &amp; Pengawasan</option>
+            <option>Logistik</option>
+            <option>Sekretariat</option>
+            <option>Umum</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Nomor Urut Dokumen <span class="req">*</span></label>
+        <input type="number" id="nomorUrut" min="1" placeholder="001" oninput="buildNoDoc()"/>
+        <div class="hint">Urutan dokumen jenis ini dalam bulan berjalan.</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Jumlah Halaman</label>
+        <input type="number" id="jmlHalaman" min="1" placeholder="—"/>
+      </div>
+      <div class="field">
+        <label>Status Manual</label>
+        <div class="sel-wrap">
+          <select id="statusManual">
+            <option value="">— (opsional) —</option>
+            <option>Aktif</option>
+            <option>Review</option>
+            <option>Dicabut</option>
+          </select>
+        </div>
+        <div class="hint">Dipakai bila TGL Berakhir dikosongkan.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 4: Upload ─── -->
+  <div class="section">
+    <div class="sec-title"><div class="num">4</div> Upload File PDF</div>
+
+    <div class="field">
+      <label>File Dokumen (PDF) <span class="req">*</span></label>
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="onFileChange()"/>
+        <div class="upload-icon">📄</div>
+        <div class="upload-text">Seret file ke sini atau <strong>klik untuk memilih</strong></div>
+        <div class="upload-text" style="margin-top:4px;font-size:11px">Format: PDF · Maks 10 MB</div>
+        <div class="upload-file-name" id="uploadFileName"></div>
+      </div>
+      <div class="hint">File akan diupload ke folder Google Drive: <strong id="drivePathHint">—</strong></div>
+    </div>
+
+    <div class="field">
+      <label>Nama File (standar) <span class="auto-badge">✦ Auto</span></label>
+      <input type="text" id="namaFile" class="readonly-styled" readonly placeholder="Otomatis dari kode & nomor dokumen"/>
+    </div>
+  </div>
+
+  <!-- ─── SECTION 5: Input & Keterangan ─── -->
+  <div class="section">
+    <div class="sec-title"><div class="num">5</div> Petugas & Keterangan</div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Diinput Oleh <span class="req">*</span></label>
+        <input type="text" id="inputOleh" placeholder="Nama petugas"/>
+      </div>
+      <div class="field">
+        <label>Tanggal Input <span class="auto-badge">✦ Auto</span></label>
+        <input type="text" id="tglInput" class="readonly-styled" readonly/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Keterangan Tambahan</label>
+      <textarea id="keterangan" placeholder="Catatan khusus, tindak lanjut, atau keterangan lainnya…"></textarea>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-wrap">
+    <button class="btn-submit" id="btnSubmit" onclick="submitForm()">
+      <span class="btn-text">Simpan & Upload ke Drive ↗</span>
+      <div class="spinner"></div>
+    </button>
+    <button class="btn-reset" onclick="resetForm()">Hapus semua isian</button>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────
+const KODE_MAP = {
+  'Surat Keputusan': 'SK', 'Peraturan Komisi': 'PK',
+  'Nota Dinas': 'ND', 'Surat Biasa': 'SB',
+  'Pengumuman': 'PG', 'Berita Acara': 'BA',
+  'Instruksi': 'INS', 'Edaran': 'EDR'
+};
+
+const BULAN_ROMAWI = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+const BULAN_NAMA   = ['01 Januari','02 Februari','03 Maret','04 April','05 Mei','06 Juni',
+                      '07 Juli','08 Agustus','09 September','10 Oktober','11 November','12 Desember'];
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+window.onload = () => {
+  // restore config
+  const savedUrl = localStorage.getItem('kpu_script_url') || '';
+  document.getElementById('scriptUrl').value = savedUrl;
+
+  // today
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2,'0');
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const yy = today.getFullYear();
+  document.getElementById('tglInput').value = `${dd}/${mm}/${yy}`;
+
+  // listen radio
+  document.querySelectorAll('input[name="jenis"]').forEach(r => r.addEventListener('change', () => {
+    onJenisChange(); buildNoDoc(); updateFolderPreview();
+  }));
+
+  // listen fields for progress
+  document.querySelectorAll('input,select,textarea').forEach(el => el.addEventListener('input', updateProgress));
+  document.querySelectorAll('input[name="jenis"]').forEach(r => r.addEventListener('change', updateProgress));
+
+  updateProgress();
+  updateStatus();
+};
+
+function saveConfig(){
+  localStorage.setItem('kpu_script_url', document.getElementById('scriptUrl').value.trim());
+}
+
+// ─────────────────────────────────────────────
+// JENIS & NO DOC
+// ─────────────────────────────────────────────
+function onJenisChange(){ buildNoDoc(); }
+
+function onDateChange(){
+  const val = document.getElementById('tglDitetapkan').value;
+  if(!val) return;
+  const d = new Date(val);
+  document.getElementById('tahun').value = d.getFullYear();
+  document.getElementById('tglBerlaku').value = val;
+  buildNoDoc();
+  updateFolderPreview();
+}
+
+function buildNoDoc(){
+  const jenis   = document.querySelector('input[name="jenis"]:checked')?.value;
+  const tgl     = document.getElementById('tglDitetapkan').value;
+  const nomor   = document.getElementById('nomorUrut').value;
+  if(!jenis || !tgl || !nomor) return;
+
+  const kode = KODE_MAP[jenis] || 'XX';
+  const d    = new Date(tgl);
+  const bln  = BULAN_ROMAWI[d.getMonth()];
+  const thn  = d.getFullYear();
+  const no   = String(nomor).padStart(3,'0');
+
+  document.getElementById('noDoc').value = `${kode}/${no}/KPU-MNA/${bln}/${thn}`;
+
+  // nama file
+  const judulRaw = document.getElementById('judul').value || 'Dokumen';
+  const judulSlug = judulRaw.trim().substring(0,30).replace(/[^a-zA-Z0-9\s]/g,'').trim().replace(/\s+/g,'-');
+  document.getElementById('namaFile').value = `${kode}-${no}-${thn}-${judulSlug}.pdf`;
+}
+
+// ─────────────────────────────────────────────
+// FOLDER PREVIEW
+// ─────────────────────────────────────────────
+function updateFolderPreview(){
+  const jenis = document.querySelector('input[name="jenis"]:checked')?.value;
+  const tgl   = document.getElementById('tglDitetapkan').value;
+  const box   = document.getElementById('folderPreview');
+  const path  = document.getElementById('folderPath');
+  const hint  = document.getElementById('drivePathHint');
+
+  if(!jenis || !tgl){ box.style.display='none'; hint.textContent='—'; return; }
+
+  const d   = new Date(tgl);
+  const thn = d.getFullYear();
+  const bln = BULAN_NAMA[d.getMonth()];
+  const fp  = `KPU Muna / ${jenis} / ${thn} / ${bln}`;
+
+  path.textContent = fp;
+  hint.textContent = fp;
+  box.style.display = 'flex';
+}
+
+// ─────────────────────────────────────────────
+// STATUS
+// ─────────────────────────────────────────────
+function updateStatus(){
+  const tglAkhir  = document.getElementById('tglBerakhir').value;
+  const badge     = document.getElementById('statusBadge');
+  badge.className = 'status-preview';
+
+  if(!tglAkhir){
+    badge.textContent = '⬤  Aktif (tanpa batas)';
+    return;
+  }
+
+  const now  = new Date(); now.setHours(0,0,0,0);
+  const end  = new Date(tglAkhir);
+  const diff = (end - now) / 86400000;
+
+  if(diff < 0){
+    badge.classList.add('expired');
+    badge.textContent = '⬤  Arsip (Kadaluarsa)';
+  } else if(diff <= 30){
+    badge.classList.add('review');
+    badge.textContent = `⬤  Aktif · ⚠️ Berakhir ${Math.ceil(diff)} hari lagi`;
+  } else {
+    badge.textContent = '⬤  Aktif';
+  }
+}
+
+// ─────────────────────────────────────────────
+// UPLOAD
+// ─────────────────────────────────────────────
+function onFileChange(){
+  const file = document.getElementById('fileInput').files[0];
+  const area = document.getElementById('uploadArea');
+  const name = document.getElementById('uploadFileName');
+
+  if(file){
+    area.classList.add('has-file');
+    name.textContent = `✓ ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
+  } else {
+    area.classList.remove('has-file');
+    name.textContent = '';
+  }
+  updateProgress();
+}
+
+// ─────────────────────────────────────────────
+// PROGRESS
+// ─────────────────────────────────────────────
+const REQUIRED_IDS = ['jenis','judul','tglDitetapkan','nomorUrut','divisi','inputOleh','fileInput'];
+
+function updateProgress(){
+  let filled = 0;
+  REQUIRED_IDS.forEach(id => {
+    if(id === 'jenis'){
+      if(document.querySelector('input[name="jenis"]:checked')) filled++;
+    } else if(id === 'fileInput'){
+      if(document.getElementById('fileInput').files.length > 0) filled++;
+    } else {
+      if(document.getElementById(id)?.value?.trim()) filled++;
+    }
+  });
+
+  const pct = Math.round((filled / REQUIRED_IDS.length) * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progPct').textContent  = pct + '%';
+}
+
+// ─────────────────────────────────────────────
+// SUBMIT
+// ─────────────────────────────────────────────
+async function submitForm(){
+  const scriptUrl = document.getElementById('scriptUrl').value.trim();
+  if(!scriptUrl){ showToast('⚠️ Tempel URL Apps Script terlebih dahulu di kotak atas!','error'); return; }
+
+  // Validate
+  const jenis  = document.querySelector('input[name="jenis"]:checked')?.value;
+  const judul  = document.getElementById('judul').value.trim();
+  const tgl    = document.getElementById('tglDitetapkan').value;
+  const nomor  = document.getElementById('nomorUrut').value;
+  const divisi = document.getElementById('divisi').value;
+  const petugas= document.getElementById('inputOleh').value.trim();
+  const file   = document.getElementById('fileInput').files[0];
+
+  if(!jenis||!judul||!tgl||!nomor||!divisi||!petugas){
+    showToast('⚠️ Lengkapi semua kolom wajib (*)', 'error'); return;
+  }
+  if(!file){ showToast('⚠️ Pilih file PDF terlebih dahulu', 'error'); return; }
+  if(file.size > 10*1024*1024){ showToast('⚠️ Ukuran file maks 10 MB', 'error'); return; }
+
+  const btn = document.getElementById('btnSubmit');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    // Encode file to base64
+    const base64 = await fileToBase64(file);
+
+    const tglAkhir   = document.getElementById('tglBerakhir').value;
+    const tglBerlaku = document.getElementById('tglBerlaku').value;
+    const now        = new Date();
+    const tglInput   = document.getElementById('tglInput').value;
+
+    // Auto status
+    let status = 'Aktif';
+    if(tglAkhir){
+      const end = new Date(tglAkhir); end.setHours(0,0,0,0);
+      const today = new Date(); today.setHours(0,0,0,0);
+      if(end < today) status = 'Arsip (Kadaluarsa)';
+    }
+
+    const payload = {
+      noDoc:       document.getElementById('noDoc').value,
+      jenis, judul,
+      tahun:       document.getElementById('tahun').value,
+      tglDitetapkan: tgl,
+      tglBerlaku,
+      tglBerakhir: tglAkhir,
+      status,
+      divisi,
+      inputOleh:   petugas,
+      tglInput,
+      keterangan:  document.getElementById('keterangan').value.trim(),
+      jmlHalaman:  document.getElementById('jmlHalaman').value,
+      statusManual:document.getElementById('statusManual').value,
+      namaFile:    document.getElementById('namaFile').value,
+      fileBase64:  base64,
+      fileMime:    'application/pdf',
+    };
+
+    const res  = await fetch(scriptUrl, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if(data.status === 'ok'){
+      showToast('✅ Berhasil disimpan ke Sheets & Drive!', 'success');
+      resetForm();
+    } else {
+      showToast('❌ Gagal: ' + (data.message || 'Cek Apps Script'), 'error');
+    }
+  } catch(e){
+    showToast('❌ Error: ' + e.message, 'error');
+  } finally {
+    btn.classList.remove('loading'); btn.disabled = false;
+  }
+}
+
+function fileToBase64(file){
+  return new Promise((res,rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function resetForm(){
+  document.querySelectorAll('input:not([readonly]):not([type=file]), select, textarea').forEach(el => {
+    if(el.type === 'radio' || el.type === 'checkbox') el.checked = false;
+    else el.value = '';
+  });
+  document.getElementById('fileInput').value = '';
+  document.getElementById('uploadArea').classList.remove('has-file');
+  document.getElementById('uploadFileName').textContent = '';
+  document.getElementById('folderPreview').style.display = 'none';
+  document.getElementById('noDoc').value   = '';
+  document.getElementById('namaFile').value= '';
+  document.getElementById('tahun').value   = '';
+
+  // restore today
+  const today = new Date();
+  document.getElementById('tglInput').value = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
+
+  updateProgress();
+  updateStatus();
+}
+
+let _toastTimer;
+function showToast(msg, type=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.className = 'toast', 4000);
+}
+
+// judul input → rebuild namaFile
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('judul').addEventListener('input', buildNoDoc);
+});
+</script>
+</body>
+</html>
