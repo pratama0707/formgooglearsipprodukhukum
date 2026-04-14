@@ -13,7 +13,7 @@
       --surface:  #faf8f3;
       --card:     #ffffff;
       --border:   #ddd8cc;
-      --accent:   #85110f;
+      --accent:   #871a1a;
       --gold:     #b8860b;
       --gold-lt:  #e8d5a3;
       --danger:   #c0392b;
@@ -106,7 +106,7 @@
     .progress-wrap { margin-bottom: 20px; animation: up .5s ease .05s both; }
     .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
     .progress-bar { height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); border-radius: 99px; width: 0%; transition: width .5s ease; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #cc0000, var(--gold)); border-radius: 99px; width: 0%; transition: width .5s ease; }
 
     /* ── Section card ── */
     .section {
@@ -326,7 +326,7 @@
       transition: background var(--tr), transform var(--tr), box-shadow var(--tr);
     }
 
-    .btn-submit:hover { background: #122b47; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,58,92,.25); }
+    .btn-submit:hover { background: #a80000; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(204,0,0,.3); }
     .btn-submit:active { transform: none; }
     .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
 
@@ -364,24 +364,7 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Apps Script config box ── */
-    .config-box {
-      background: #fffbf0;
-      border: 1px solid #e8d5a3;
-      border-left: 4px solid var(--gold);
-      border-radius: var(--radius);
-      padding: 20px 24px;
-      margin-bottom: 20px;
-      font-size: 13px;
-      animation: up .5s ease both;
-    }
-
-    .config-box h3 { color: var(--gold); font-size: 13px; font-weight: 600; margin-bottom: 10px; }
-    .config-box label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
-    .config-box input { width: 100%; padding: 8px 12px; border: 1px solid #e0d4b5; border-radius: 7px; font-size: 12px; font-family: monospace; background: #fff; color: var(--text); outline: none; }
-    .config-box input:focus { border-color: var(--gold); }
-    .config-box .note { font-size: 11px; color: var(--muted); margin-top: 10px; line-height: 1.6; }
-    .config-box .note a { color: var(--gold); }
+    /* config-box removed — URL hardcoded */
 
     ::-webkit-scrollbar { width:5px }
     ::-webkit-scrollbar-track { background: var(--bg) }
@@ -390,9 +373,6 @@
 </head>
 <body>
 <div class="wrapper">
-
-  <!-- Config box -->
- 
 
   <!-- Header -->
   <div class="header-card">
@@ -424,12 +404,12 @@
     <div class="field">
       <label>Jenis Dokumen <span class="req">*</span></label>
       <div class="radio-grid" id="jenisGrid">
-        <label class="radio-card"><input type="radio" name="jenis" value="Surat Keputusan"/><div class="radio-dot"></div><span class="radio-label">Surat Keputusan</span></label>
-        <label class="radio-card"><input type="radio" name="jenis" value="Peraturan KPU"/><div class="radio-dot"></div><span class="radio-label">Peraturan KPU</span></label>
-
-        <label class="radio-card"><input type="radio" name="jenis" value="Notulen Rapat"/><div class="radio-dot"></div><span class="radio-label">Notulen Rapat</span></label>
+        <label class="radio-card"><input type="radio" name="jenis" value="Surat Keputusan Sekretaris"/><div class="radio-dot"></div><span class="radio-label">Surat Keputusan Sekretaris</span></label>
+        <label class="radio-card"><input type="radio" name="jenis" value="Surat Keputusan KPU"/><div class="radio-dot"></div><span class="radio-label">Surat Keputusan KPU</span></label>
+        <label class="radio-card"><input type="radio" name="jenis" value="Notulen"/><div class="radio-dot"></div><span class="radio-label">Notulen</span></label>
         <label class="radio-card"><input type="radio" name="jenis" value="Berita Acara"/><div class="radio-dot"></div><span class="radio-label">Berita Acara</span></label>
-       </div>
+        
+      </div>
       <div class="folder-preview" id="folderPreview" style="display:none">
         📁 <span class="path" id="folderPath">—</span>
       </div>
@@ -461,27 +441,17 @@
         <label>Tanggal Ditetapkan <span class="req">*</span></label>
         <input type="date" id="tglDitetapkan" oninput="onDateChange()"/>
       </div>
-      <div class="field">
-        <label>Tanggal Berlaku</label>
-        <input type="date" id="tglBerlaku"/>
-      </div>
+      
     </div>
 
-    <div class="field">
-      <label>Tanggal Berakhir <small style="font-weight:300;color:var(--muted)">(kosongkan jika tidak ada batas waktu)</small></label>
-      <input type="date" id="tglBerakhir" oninput="updateStatus()"/>
-    </div>
+   
 
-    <div class="field">
-      <label>Status Dokumen <span class="auto-badge">✦ Auto</span></label>
-      <div class="status-preview" id="statusBadge">⬤ &nbsp;Aktif</div>
-      <div class="hint">Dihitung otomatis berdasarkan tanggal berakhir.</div>
-    </div>
+  
   </div>
 
   <!-- ─── SECTION 3: Organisasi ─── -->
   <div class="section">
-    <div class="sec-title"><div class="num">3</div> Divisi & Nomor Urut</div>
+    <div class="sec-title"><div class="num">3</div> Sub bagian</div>
 
     <div class="grid2">
       <div class="field">
@@ -489,28 +459,20 @@
         <div class="sel-wrap">
           <select id="divisi">
             <option value="" disabled selected>— Pilih —</option>
-            <option>Teknis Penyelenggaraan</option>
-            <option>SDM &amp; Partisipasi</option>
-            <option>Keuangan</option>
-            <option>Hukum &amp; Pengawasan</option>
-            <option>Logistik</option>
+            <option>Parhubmas &amp; SDM</option>
+            <option>Keuangan, Logistik &amp; Umum</option>
+            <option>Hukum &amp; Teknis Penyelenggaraan Pemilu </option>
+              <option>Perencanaan, Data &amp; Informasi </option>
             <option>Sekretariat</option>
             <option>Umum</option>
           </select>
         </div>
       </div>
-      <div class="field">
-        <label>Nomor Urut Dokumen <span class="req">*</span></label>
-        <input type="number" id="nomorUrut" min="1" placeholder="001" oninput="buildNoDoc()"/>
-        <div class="hint">Urutan dokumen jenis ini dalam bulan berjalan.</div>
-      </div>
+      
     </div>
 
     <div class="grid2">
-      <div class="field">
-        <label>Jumlah Halaman</label>
-        <input type="number" id="jmlHalaman" min="1" placeholder="—"/>
-      </div>
+      
       <div class="field">
         <label>Status Manual</label>
         <div class="sel-wrap">
